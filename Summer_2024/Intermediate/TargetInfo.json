@@ -1,0 +1,14 @@
+{
+	"Targets": [
+		{
+			"Name": "Summer_2024",
+			"Path": "..\\Source\\Summer_2024.Target.cs",
+			"Type": "Game"
+		},
+		{
+			"Name": "Summer_2024Editor",
+			"Path": "..\\Source\\Summer_2024Editor.Target.cs",
+			"Type": "Editor"
+		}
+	]
+}

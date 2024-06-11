@@ -1,0 +1,13 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "c:\\github\\github\\ue summer projects\\summer-2024\\summer_2024\\intermediate\\build\\win64\\unrealeditor\\inc\\summer_2024\\uht\\summer_2024.init.gen.cpp",
+        "ProvidedModule": "",
+        "PCH": "c:\\github\\github\\ue summer projects\\summer-2024\\summer_2024\\intermediate\\build\\win64\\x64\\summer_2024editor\\development\\unrealed\\sharedpch.unrealed.project.valapi.cpp20.h.pch",
+        "Includes": [
+            "c:\\github\\github\\ue summer projects\\summer-2024\\summer_2024\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\summer_2024\\definitions.summer_2024.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}
