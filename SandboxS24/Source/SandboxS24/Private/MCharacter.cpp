@@ -9,6 +9,8 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Engine/LocalPlayer.h"
 
 // Sets default values
@@ -26,14 +28,60 @@ AMCharacter::AMCharacter()
 	FirstPersonCameraComponent->SetRelativeLocation(FVector(-10.f, 0.f, 60.f)); // Position the camera
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
 
+	SpringArm = CreateDefaultSubobject<USpringArmComponent>("SpringArm");
+	SpringArm->SetupAttachment(GetCapsuleComponent());
+	SpringArm->bUsePawnControlRotation = true; 
+
+	ThirdPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("ThirdPersonCamera"));
+	ThirdPersonCameraComponent->SetupAttachment(SpringArm);
+	//ThirdPersonCameraComponent->SetRelativeLocation(FVector(-10.f, 0.f, 60.f)); // Position the camera	bUseControllerRotationYaw = false; 
+
 	// Create a mesh component that will be used when being viewed from a '1st person' view (when controlling this pawn)
 	Mesh1P = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh1P"));
 	Mesh1P->SetOnlyOwnerSee(true);
 	Mesh1P->SetupAttachment(FirstPersonCameraComponent);
+	Mesh1P->SetupAttachment(SpringArm);
 	Mesh1P->bCastDynamicShadow = false;
 	Mesh1P->CastShadow = false;
 	//Mesh1P->SetRelativeRotation(FRotator(0.9f, -19.19f, 5.2f));
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
+
+}
+
+// Called when the game starts or when spawned
+void AMCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+}
+
+// Called every frame
+void AMCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+}
+
+// Called to bind functionality to input
+void AMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
+	{
+	// Jumping
+	EnhancedInputComponent->BindAction(IA_Jump, ETriggerEvent::Started, this, &ACharacter::Jump);
+	EnhancedInputComponent->BindAction(IA_Jump, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+
+	// Moving
+	EnhancedInputComponent->BindAction(IA_Move, ETriggerEvent::Triggered, this, &AMCharacter::Move);
+
+	// Looking
+	EnhancedInputComponent->BindAction(IA_Look, ETriggerEvent::Triggered, this, &AMCharacter::LookFp);
+
+	EnhancedInputComponent->BindAction(IA_SwitchCamera, ETriggerEvent::Triggered, this, &AMCharacter::SwitchCamera);
+
+	}
 
 }
 
@@ -69,6 +117,24 @@ void AMCharacter::LookTp(const FInputActionValue& Value)
 
 void AMCharacter::SwitchCamera(const FInputActionValue& Value)
 {
+	if (bSwitchCamera)
+	{
+		//UE_LOG(MyLogCategory, Error, TEXT("An error occurred in SomeFunction: %s"), TEXT("Detailed error message"));
+		bSwitchCamera = false; 
+		GetThirdPersonCameraComponent()->SetActive(true); 
+		GetFirstPersonCameraComponent()->SetActive(false);
+		bUseControllerRotationYaw = false;
+		GetCharacterMovement()->bOrientRotationToMovement = false;
+		
+	}
+	else
+	{
+		bSwitchCamera = true; 
+		GetFirstPersonCameraComponent()->SetActive(true);
+		GetThirdPersonCameraComponent()->SetActive(false);
+		bUseControllerRotationYaw = true; 
+		GetCharacterMovement()->bOrientRotationToMovement = true; 
+	}
 }
 
 void AMCharacter::Run(const FInputActionValue& Value)
@@ -79,38 +145,4 @@ void AMCharacter::Crouch(const FInputActionValue& Value)
 {
 }
 
-// Called when the game starts or when spawned
-void AMCharacter::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
-// Called every frame
-void AMCharacter::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
-// Called to bind functionality to input
-void AMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
-	{
-	// Jumping
-	EnhancedInputComponent->BindAction(IA_Jump, ETriggerEvent::Started, this, &ACharacter::Jump);
-	EnhancedInputComponent->BindAction(IA_Jump, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
-
-	// Moving
-	EnhancedInputComponent->BindAction(IA_Move, ETriggerEvent::Triggered, this, &AMCharacter::Move);
-
-	// Looking
-	EnhancedInputComponent->BindAction(IA_Look, ETriggerEvent::Triggered, this, &AMCharacter::LookFp);
-
-	}
-
-}
 
