@@ -65,6 +65,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* IA_Crouch;
 
+	/** AltLook Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* IA_AltLook;
+
 private:
 	// Makes character move
 	void Move(const FInputActionValue& Value);
@@ -76,7 +80,7 @@ private:
 	void LookTp(const FInputActionValue& Value);
 
 	// switches between third and first person camera
-	void SwitchCamera(const FInputActionValue& Value);
+	void SwitchCamera();
 
 	// makes charecter run
 	void Run(const FInputActionValue& Value);
@@ -84,7 +88,14 @@ private:
 	// makes charecter crouch
 	void Crouch(const FInputActionValue& Value);
 
+	//Look around without character moving
+	void AltLook(const FInputActionValue& Value);
+
 	bool bSwitchCamera = true; 
+	bool bAltLook = true; 
+
+
+	FRotator InitalCameraRotation;
 
 protected:
 	// Called when the game starts or when spawned

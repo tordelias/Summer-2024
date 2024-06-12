@@ -46,6 +46,8 @@ AMCharacter::AMCharacter()
 	//Mesh1P->SetRelativeRotation(FRotator(0.9f, -19.19f, 5.2f));
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
 
+	bUseControllerRotationYaw = true; 
+
 }
 
 // Called when the game starts or when spawned
@@ -79,7 +81,12 @@ void AMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	// Looking
 	EnhancedInputComponent->BindAction(IA_Look, ETriggerEvent::Triggered, this, &AMCharacter::LookFp);
 
+	//Switch Camera
 	EnhancedInputComponent->BindAction(IA_SwitchCamera, ETriggerEvent::Triggered, this, &AMCharacter::SwitchCamera);
+
+	//AltLook
+	EnhancedInputComponent->BindAction(IA_AltLook, ETriggerEvent::Started, this, &AMCharacter::AltLook);
+	EnhancedInputComponent->BindAction(IA_AltLook, ETriggerEvent::Completed, this, &AMCharacter::AltLook);
 
 	}
 
@@ -115,7 +122,7 @@ void AMCharacter::LookTp(const FInputActionValue& Value)
 {
 }
 
-void AMCharacter::SwitchCamera(const FInputActionValue& Value)
+void AMCharacter::SwitchCamera()
 {
 	if (bSwitchCamera)
 	{
@@ -123,7 +130,7 @@ void AMCharacter::SwitchCamera(const FInputActionValue& Value)
 		bSwitchCamera = false; 
 		GetThirdPersonCameraComponent()->SetActive(true); 
 		GetFirstPersonCameraComponent()->SetActive(false);
-		bUseControllerRotationYaw = false;
+		//bUseControllerRotationYaw = true;
 		GetCharacterMovement()->bOrientRotationToMovement = false;
 		
 	}
@@ -132,7 +139,7 @@ void AMCharacter::SwitchCamera(const FInputActionValue& Value)
 		bSwitchCamera = true; 
 		GetFirstPersonCameraComponent()->SetActive(true);
 		GetThirdPersonCameraComponent()->SetActive(false);
-		bUseControllerRotationYaw = true; 
+		//bUseControllerRotationYaw = true; 
 		GetCharacterMovement()->bOrientRotationToMovement = true; 
 	}
 }
@@ -143,6 +150,24 @@ void AMCharacter::Run(const FInputActionValue& Value)
 
 void AMCharacter::Crouch(const FInputActionValue& Value)
 {
+}
+
+void AMCharacter::AltLook(const FInputActionValue& Value)
+{
+	if(bAltLook)
+	{
+		InitalCameraRotation = GetMesh()->GetRelativeRotation();
+		bUseControllerRotationYaw = false;
+		bAltLook = false;
+	}
+	else
+	{
+		
+		GetFirstPersonCameraComponent()->SetRelativeRotation(InitalCameraRotation);
+		GetThirdPersonCameraComponent()->SetRelativeRotation(InitalCameraRotation);
+		bUseControllerRotationYaw = true;
+		bAltLook = true;
+	}
 }
 
 
