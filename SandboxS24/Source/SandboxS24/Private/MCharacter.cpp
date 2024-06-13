@@ -46,7 +46,12 @@ AMCharacter::AMCharacter()
 	//Mesh1P->SetRelativeRotation(FRotator(0.9f, -19.19f, 5.2f));
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
 
-	bUseControllerRotationYaw = true; 
+
+	// enable crouching
+	if (GetMovementComponent())
+	{
+		GetMovementComponent()->GetNavAgentPropertiesRef().bCanCrouch = true;
+	}
 
 }
 
@@ -87,6 +92,14 @@ void AMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	//AltLook
 	EnhancedInputComponent->BindAction(IA_AltLook, ETriggerEvent::Started, this, &AMCharacter::AltLook);
 	EnhancedInputComponent->BindAction(IA_AltLook, ETriggerEvent::Completed, this, &AMCharacter::AltLook);
+
+	//Crouch
+	EnhancedInputComponent->BindAction(IA_Crouch, ETriggerEvent::Started, this, &AMCharacter::Crouch);
+	EnhancedInputComponent->BindAction(IA_Crouch, ETriggerEvent::Completed, this, &AMCharacter::CrouchEnd);
+
+	//Run
+	EnhancedInputComponent->BindAction(IA_Run, ETriggerEvent::Started, this, &AMCharacter::Run);
+	EnhancedInputComponent->BindAction(IA_Run, ETriggerEvent::Completed, this, &AMCharacter::StopRunning);
 
 	}
 
@@ -130,7 +143,7 @@ void AMCharacter::SwitchCamera()
 		bSwitchCamera = false; 
 		GetThirdPersonCameraComponent()->SetActive(true); 
 		GetFirstPersonCameraComponent()->SetActive(false);
-		//bUseControllerRotationYaw = true;
+		bUseControllerRotationYaw = true;
 		GetCharacterMovement()->bOrientRotationToMovement = false;
 		
 	}
@@ -139,17 +152,30 @@ void AMCharacter::SwitchCamera()
 		bSwitchCamera = true; 
 		GetFirstPersonCameraComponent()->SetActive(true);
 		GetThirdPersonCameraComponent()->SetActive(false);
-		//bUseControllerRotationYaw = true; 
+		bUseControllerRotationYaw = true; 
 		GetCharacterMovement()->bOrientRotationToMovement = true; 
 	}
 }
 
 void AMCharacter::Run(const FInputActionValue& Value)
 {
+	GetCharacterMovement()->MaxWalkSpeed = 1000.f;
+}
+
+void AMCharacter::StopRunning(const FInputActionValue& Value)
+{
+	GetCharacterMovement()->MaxWalkSpeed = 600.f;
 }
 
 void AMCharacter::Crouch(const FInputActionValue& Value)
 {
+	GetCharacterMovement()->bWantsToCrouch = true; 
+
+}
+
+void AMCharacter::CrouchEnd(const FInputActionValue& Value)
+{
+	GetCharacterMovement()->bWantsToCrouch = false;
 }
 
 void AMCharacter::AltLook(const FInputActionValue& Value)

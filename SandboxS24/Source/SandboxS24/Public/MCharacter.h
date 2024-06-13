@@ -84,9 +84,11 @@ private:
 
 	// makes charecter run
 	void Run(const FInputActionValue& Value);
+	void StopRunning(const FInputActionValue& Value);
 
 	// makes charecter crouch
 	void Crouch(const FInputActionValue& Value);
+	void CrouchEnd(const FInputActionValue& Value);
 
 	//Look around without character moving
 	void AltLook(const FInputActionValue& Value);
