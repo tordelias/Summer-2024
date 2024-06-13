@@ -25,7 +25,7 @@ AMCharacter::AMCharacter()
 	// Create a CameraComponent	
 	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
 	FirstPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
-	FirstPersonCameraComponent->SetRelativeLocation(FVector(-10.f, 0.f, 60.f)); // Position the camera
+	FirstPersonCameraComponent->SetRelativeLocation(FVector(5.f, 0.f, 60.f)); // Position the camera
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
 
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>("SpringArm");
@@ -182,15 +182,13 @@ void AMCharacter::AltLook(const FInputActionValue& Value)
 {
 	if(bAltLook)
 	{
-		InitalCameraRotation = GetMesh()->GetRelativeRotation();
+		InitalCameraRotation = GetControlRotation();
 		bUseControllerRotationYaw = false;
 		bAltLook = false;
 	}
 	else
 	{
-		
-		GetFirstPersonCameraComponent()->SetRelativeRotation(InitalCameraRotation);
-		GetThirdPersonCameraComponent()->SetRelativeRotation(InitalCameraRotation);
+		GetController()->SetControlRotation(InitalCameraRotation);
 		bUseControllerRotationYaw = true;
 		bAltLook = true;
 	}

@@ -118,4 +118,6 @@ public:
 
 	UCameraComponent* GetThirdPersonCameraComponent() const { return ThirdPersonCameraComponent; }
 
+	USpringArmComponent* GetSpringArm() const { return SpringArm; }
+
 };
