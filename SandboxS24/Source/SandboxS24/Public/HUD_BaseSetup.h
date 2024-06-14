@@ -57,6 +57,6 @@ public:
 
 public:
 	void CollapseAllWidgets();
-	void ExpandWidget(UUserWidget* Widget);
+	void ExpandWidget(int WidgetID);
 
 };

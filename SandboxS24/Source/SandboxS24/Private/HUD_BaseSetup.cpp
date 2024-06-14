@@ -74,7 +74,7 @@ void AHUD_BaseSetup::BeginPlay()
 
 	CollapseAllWidgets();
 
-	CreatedWidgets[2]->SetVisibility(ESlateVisibility::Visible);
+	//CreatedWidgets[2]->SetVisibility(ESlateVisibility::Visible);
 
 	/*UE_LOG(LogTemp, Warning, TEXT("CreatedWidgets: %d"), CreatedWidgets.Num());
 	UE_LOG(LogTemp, Warning, TEXT("AllUIWidgets: %d"), AllUIWidgets.Num());*/
@@ -90,17 +90,16 @@ void AHUD_BaseSetup::CollapseAllWidgets()
 	}
 }
 
-void AHUD_BaseSetup::ExpandWidget(UUserWidget* Widget)
+void AHUD_BaseSetup::ExpandWidget(int WidgetID)
 {
-	if(CurrentWidget == Widget) // Not sure this works TODO: Test this
+	if(CurrentWidget == CreatedWidgets[WidgetID]) // Not sure this works TODO: Test thiss
 	{
 		
 	}
 	else
 	{
 		CollapseAllWidgets();
-		CurrentWidget = Widget;
-		Widget->SetVisibility(ESlateVisibility::Visible);
+		CurrentWidget->SetVisibility(ESlateVisibility::Visible);
 	}
 }
 

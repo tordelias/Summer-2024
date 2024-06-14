@@ -12,10 +12,14 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Engine/LocalPlayer.h"
+#include "HUD_BaseSetup.h"
+
 
 // Sets default values
 AMCharacter::AMCharacter()
 {
+
+
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -76,30 +80,32 @@ void AMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
-	// Jumping
-	EnhancedInputComponent->BindAction(IA_Jump, ETriggerEvent::Started, this, &ACharacter::Jump);
-	EnhancedInputComponent->BindAction(IA_Jump, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+		// Jumping
+		EnhancedInputComponent->BindAction(IA_Jump, ETriggerEvent::Started, this, &ACharacter::Jump);
+		EnhancedInputComponent->BindAction(IA_Jump, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
-	// Moving
-	EnhancedInputComponent->BindAction(IA_Move, ETriggerEvent::Triggered, this, &AMCharacter::Move);
+		// Moving
+		EnhancedInputComponent->BindAction(IA_Move, ETriggerEvent::Triggered, this, &AMCharacter::Move);
 
-	// Looking
-	EnhancedInputComponent->BindAction(IA_Look, ETriggerEvent::Triggered, this, &AMCharacter::LookFp);
+		// Looking
+		EnhancedInputComponent->BindAction(IA_Look, ETriggerEvent::Triggered, this, &AMCharacter::LookFp);
 
-	//Switch Camera
-	EnhancedInputComponent->BindAction(IA_SwitchCamera, ETriggerEvent::Triggered, this, &AMCharacter::SwitchCamera);
+		//Switch Camera
+		EnhancedInputComponent->BindAction(IA_SwitchCamera, ETriggerEvent::Triggered, this, &AMCharacter::SwitchCamera);
 
-	//AltLook
-	EnhancedInputComponent->BindAction(IA_AltLook, ETriggerEvent::Started, this, &AMCharacter::AltLook);
-	EnhancedInputComponent->BindAction(IA_AltLook, ETriggerEvent::Completed, this, &AMCharacter::AltLook);
+		//AltLook
+		EnhancedInputComponent->BindAction(IA_AltLook, ETriggerEvent::Started, this, &AMCharacter::AltLook);
+		EnhancedInputComponent->BindAction(IA_AltLook, ETriggerEvent::Completed, this, &AMCharacter::AltLook);
 
-	//Crouch
-	EnhancedInputComponent->BindAction(IA_Crouch, ETriggerEvent::Started, this, &AMCharacter::Crouch);
-	EnhancedInputComponent->BindAction(IA_Crouch, ETriggerEvent::Completed, this, &AMCharacter::CrouchEnd);
+		//Crouch
+		EnhancedInputComponent->BindAction(IA_Crouch, ETriggerEvent::Started, this, &AMCharacter::Crouch);
+		EnhancedInputComponent->BindAction(IA_Crouch, ETriggerEvent::Completed, this, &AMCharacter::CrouchEnd);
 
-	//Run
-	EnhancedInputComponent->BindAction(IA_Run, ETriggerEvent::Started, this, &AMCharacter::Run);
-	EnhancedInputComponent->BindAction(IA_Run, ETriggerEvent::Completed, this, &AMCharacter::StopRunning);
+		//Run
+		EnhancedInputComponent->BindAction(IA_Run, ETriggerEvent::Started, this, &AMCharacter::Run);
+		EnhancedInputComponent->BindAction(IA_Run, ETriggerEvent::Completed, this, &AMCharacter::StopRunning);
+
+		EnhancedInputComponent->BindAction(IA_Inventory, ETriggerEvent::Triggered, this, &AMCharacter::OpenInventory);
 
 	}
 
@@ -194,4 +200,9 @@ void AMCharacter::AltLook(const FInputActionValue& Value)
 	}
 }
 
+
+void OpenInventory(const FInputActionValue& Value)
+{
+//TODO: Open Inventory
+}
 

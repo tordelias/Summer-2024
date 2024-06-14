@@ -3,9 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "HUD_BaseSetup.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
 #include "MCharacter.generated.h"
+
 
 class UInputComponent;
 class USkeletalMeshComponent;
@@ -13,6 +15,8 @@ class UCameraComponent;
 class UInputAction;
 class USpringArmComponent;
 struct FInputActionValue;
+
+
 
 UCLASS(config = Game)
 class SANDBOXS24_API AMCharacter : public ACharacter
@@ -69,6 +73,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* IA_AltLook;
 
+	/** AltLook Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* IA_Inventory;
+
 private:
 	// Makes character move
 	void Move(const FInputActionValue& Value);
@@ -92,6 +100,9 @@ private:
 
 	//Look around without character moving
 	void AltLook(const FInputActionValue& Value);
+
+	//Open Inventory
+	void OpenInventory(const FInputActionValue& Value);
 
 	bool bSwitchCamera = true; 
 	bool bAltLook = true; 
