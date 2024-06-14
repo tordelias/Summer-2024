@@ -74,7 +74,11 @@ void AHUD_BaseSetup::BeginPlay()
 
 	CollapseAllWidgets();
 
-	CreatedWidgets[0]->SetVisibility(ESlateVisibility::Visible);
+	CreatedWidgets[2]->SetVisibility(ESlateVisibility::Visible);
+
+	/*UE_LOG(LogTemp, Warning, TEXT("CreatedWidgets: %d"), CreatedWidgets.Num());
+	UE_LOG(LogTemp, Warning, TEXT("AllUIWidgets: %d"), AllUIWidgets.Num());*/
+
 }
 
 //Collapse all widgets 
@@ -83,6 +87,20 @@ void AHUD_BaseSetup::CollapseAllWidgets()
 	for (UUserWidget* widget : CreatedWidgets)
 	{
 		widget->SetVisibility(ESlateVisibility::Collapsed);
+	}
+}
+
+void AHUD_BaseSetup::ExpandWidget(UUserWidget* Widget)
+{
+	if(CurrentWidget == Widget) // Not sure this works TODO: Test this
+	{
+		
+	}
+	else
+	{
+		CollapseAllWidgets();
+		CurrentWidget = Widget;
+		Widget->SetVisibility(ESlateVisibility::Visible);
 	}
 }
 

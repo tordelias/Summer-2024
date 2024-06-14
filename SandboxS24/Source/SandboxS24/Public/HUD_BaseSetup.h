@@ -19,11 +19,14 @@ protected:
 	
 	virtual void BeginPlay() override;
 	virtual void DrawHUD() override;
-	void CollapseAllWidgets();
+	
 
 	// All on screen widgets to add to the HUD on BeginPlay
 	UPROPERTY(EditAnywhere)
 	TArray<TSubclassOf<class UUserWidget>> AllUIWidgets;
+
+	UPROPERTY(EditAnywhere, Category = HUD)
+	class UUserWidget* CurrentWidget;
 
 public:
 	// Current list of created UI widgets that are constantly active on screen
@@ -52,5 +55,8 @@ public:
 
 	//Modals (Dialogs, Popups, etc.)
 
+public:
+	void CollapseAllWidgets();
+	void ExpandWidget(UUserWidget* Widget);
 
 };
