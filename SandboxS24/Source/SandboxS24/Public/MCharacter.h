@@ -14,6 +14,7 @@ class USkeletalMeshComponent;
 class UCameraComponent;
 class UInputAction;
 class USpringArmComponent;
+class UInventoryComponent;
 struct FInputActionValue;
 
 
@@ -43,6 +44,10 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* SpringArm;
+
+	/** Inventory */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UInventoryComponent* InventoryComponent;
 
 
 	/** Jump Input Action */
@@ -109,6 +114,12 @@ private:
 
 
 	FRotator InitalCameraRotation;
+
+
+	// Uses an item within the inventory
+	UFUNCTION(BlueprintCallable, category = "Items")
+	void UseItem(class UItemObject* Item);
+
 
 protected:
 	// Called when the game starts or when spawned

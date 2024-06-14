@@ -13,7 +13,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Engine/LocalPlayer.h"
 #include "HUD_BaseSetup.h"
-
+#include "ItemObject.h"
+#include "InventoryComponent.h"
 
 // Sets default values
 AMCharacter::AMCharacter()
@@ -50,6 +51,10 @@ AMCharacter::AMCharacter()
 	//Mesh1P->SetRelativeRotation(FRotator(0.9f, -19.19f, 5.2f));
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
 
+	//inventory
+	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComponent"));
+	InventoryComponent->Capacity = 20;
+
 
 	// enable crouching
 	if (GetMovementComponent())
@@ -57,6 +62,16 @@ AMCharacter::AMCharacter()
 		GetMovementComponent()->GetNavAgentPropertiesRef().bCanCrouch = true;
 	}
 
+}
+
+void AMCharacter::UseItem(UItemObject* Item)
+{
+	if (Item)
+	{
+		Item->Use(this);
+		Item->OnUse(this); // Blueprint Implementable Event
+	}
+	UItemObject* Item = Cast<UItemObject>(InventoryComponent->Items[0]);
 }
 
 // Called when the game starts or when spawned
@@ -201,7 +216,7 @@ void AMCharacter::AltLook(const FInputActionValue& Value)
 }
 
 
-void OpenInventory(const FInputActionValue& Value)
+void AMCharacter::OpenInventory(const FInputActionValue& Value)
 {
 //TODO: Open Inventory
 }
