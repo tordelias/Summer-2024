@@ -16,24 +16,39 @@ class SANDBOXS24_API AHUD_BaseSetup : public AHUD
 	
 
 protected:
-	// Called when the game starts or when spawned
+	
 	virtual void BeginPlay() override;
+	virtual void DrawHUD() override;
+	void CollapseAllWidgets();
+
+	// All on screen widgets to add to the HUD on BeginPlay
+	UPROPERTY(EditAnywhere)
+	TArray<TSubclassOf<class UUserWidget>> AllUIWidgets;
 
 public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-
-
+	// Current list of created UI widgets that are constantly active on screen
+	TArray<class UUserWidget*> CreatedWidgets;
 
 	// Game (HUD) 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = HUD, meta = (AllowPrivateAccess = "true"))
+	UUserWidget* UI;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = HUD, meta = (AllowPrivateAccess = "true"))
+	UUserWidget* CrossHair;
+
 
 	// Game Menus (Inventory, Pause, etc.)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = HUD, meta = (AllowPrivateAccess = "true"))
+	UUserWidget* InventoryWidget;
 
-	//UPROPERTY(EditAnywhere, Category = "Game Menu")
-	//class UUserWidget* CurrentWidget;
 
 	// Menu (Main, Options, etc.)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = HUD, meta = (AllowPrivateAccess = "true"))
+	UUserWidget* MainMenu;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = HUD, meta = (AllowPrivateAccess = "true"))
+	UUserWidget* OptionsMenu;
+
 
 	//Modals (Dialogs, Popups, etc.)
 
