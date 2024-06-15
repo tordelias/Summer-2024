@@ -71,7 +71,6 @@ void AMCharacter::UseItem(UItemObject* Item)
 		Item->Use(this);
 		Item->OnUse(this); // Blueprint Implementable Event
 	}
-	UItemObject* Item = Cast<UItemObject>(InventoryComponent->Items[0]);
 }
 
 // Called when the game starts or when spawned
