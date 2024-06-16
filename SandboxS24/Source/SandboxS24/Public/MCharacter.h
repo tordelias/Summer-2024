@@ -78,9 +78,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* IA_AltLook;
 
-	/** AltLook Input Action */
+	/** Open Inventory Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* IA_Inventory;
+
+
 
 private:
 	// Makes character move
@@ -106,8 +108,8 @@ private:
 	//Look around without character moving
 	void AltLook(const FInputActionValue& Value);
 
-	//Open Inventory
-	void OpenInventory(const FInputActionValue& Value);
+	/**Open Inventory */
+	void OpenInventory();
 
 	bool bSwitchCamera = true; 
 	bool bAltLook = true; 

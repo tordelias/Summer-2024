@@ -12,8 +12,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Engine/LocalPlayer.h"
-#include "HUD_BaseSetup.h"
 #include "ItemObject.h"
+#include "HUD_BaseSetup.h"
 #include "InventoryComponent.h"
 
 // Sets default values
@@ -119,6 +119,7 @@ void AMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		EnhancedInputComponent->BindAction(IA_Run, ETriggerEvent::Started, this, &AMCharacter::Run);
 		EnhancedInputComponent->BindAction(IA_Run, ETriggerEvent::Completed, this, &AMCharacter::StopRunning);
 
+		//Open Inventory
 		EnhancedInputComponent->BindAction(IA_Inventory, ETriggerEvent::Triggered, this, &AMCharacter::OpenInventory);
 
 	}
@@ -180,6 +181,7 @@ void AMCharacter::SwitchCamera()
 void AMCharacter::Run(const FInputActionValue& Value)
 {
 	GetCharacterMovement()->MaxWalkSpeed = 1000.f;
+
 }
 
 void AMCharacter::StopRunning(const FInputActionValue& Value)
@@ -214,9 +216,10 @@ void AMCharacter::AltLook(const FInputActionValue& Value)
 	}
 }
 
-
-void AMCharacter::OpenInventory(const FInputActionValue& Value)
+void AMCharacter::OpenInventory()
 {
-//TODO: Open Inventory
-}
+	AHUD_BaseSetup* HUD = Cast<AHUD_BaseSetup>(this->GetClass()); 
+	
+	HUD->ExpandWidget(2); 
 
+}

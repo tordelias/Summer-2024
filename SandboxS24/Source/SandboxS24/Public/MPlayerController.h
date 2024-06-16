@@ -6,10 +6,13 @@
 #include "GameFramework/PlayerController.h"
 #include "MPlayerController.generated.h"
 class UInputMappingContext;
-
+class UInputAction;
+struct FInputActionValue;
 /**
  * 
  */
+
+
 UCLASS()
 class SANDBOXS24_API AMPlayerController : public APlayerController
 {
@@ -19,6 +22,21 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UInputMappingContext* InputMappingContext;
 
+public: 
+	///** Open Inventory Input Action */
+	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	//UInputAction* IA_Inventory;
+
+
+
+	///**Open Inventory */
+	//void OpenInventory();
+
 protected:
 	virtual void BeginPlay();
+	virtual void SetupInputComponent() override;
+
+private: 
+
+
 };

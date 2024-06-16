@@ -94,7 +94,7 @@ void AHUD_BaseSetup::ExpandWidget(int WidgetID)
 {
 	if(CurrentWidget == CreatedWidgets[WidgetID]) // Not sure this works TODO: Test thiss
 	{
-		
+	
 	}
 	else
 	{
