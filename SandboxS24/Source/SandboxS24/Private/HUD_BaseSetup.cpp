@@ -10,6 +10,9 @@ void AHUD_BaseSetup::BeginPlay()
 
 	GetOwningPlayerController()->SetInputMode(FInputModeGameOnly());
 
+	CurrentID = 100; // Set to a number that is not in the array
+
+
 	//Add all widgets to the HUD
 	if(UI)
 	{
@@ -57,7 +60,7 @@ void AHUD_BaseSetup::BeginPlay()
 	}
 
 
-	// If any widgets need to be added
+	// Adds all defined widgets to the viewport
 	if (AllUIWidgets.Num() > 0)
 	{
 		// Iterate through all widgets
@@ -72,12 +75,9 @@ void AHUD_BaseSetup::BeginPlay()
 		}
 	}
 
-	CollapseAllWidgets();
+	CollapseAllWidgets(); //Collapse all widgets
 
-	//CreatedWidgets[2]->SetVisibility(ESlateVisibility::Visible);
-
-	/*UE_LOG(LogTemp, Warning, TEXT("CreatedWidgets: %d"), CreatedWidgets.Num());
-	UE_LOG(LogTemp, Warning, TEXT("AllUIWidgets: %d"), AllUIWidgets.Num());*/
+	WantsToOpenWidget(0); //Open the first widget (UI)
 
 }
 
@@ -90,17 +90,30 @@ void AHUD_BaseSetup::CollapseAllWidgets()
 	}
 }
 
-void AHUD_BaseSetup::ExpandWidget(int WidgetID)
+// Checks if the widget is already open and if not sends the widget ID to ExpandWidget
+void AHUD_BaseSetup::WantsToOpenWidget(int WidgetID)
 {
-	if(CurrentWidget == CreatedWidgets[WidgetID]) // Not sure this works TODO: Test thiss
+	if (CurrentID == WidgetID)
 	{
-	
+		UE_LOG(LogTemp, Warning, TEXT("CurrentID == WidgetID"));
+		return;
 	}
 	else
 	{
-		CollapseAllWidgets();
-		CurrentWidget->SetVisibility(ESlateVisibility::Visible);
+		ExpandWidget(WidgetID);
 	}
+}
+
+// Expands the widget with the given ID
+void AHUD_BaseSetup::ExpandWidget(int WidgetID)
+{
+	CurrentID = WidgetID;
+	//what is CurrentID?
+	UE_LOG(LogTemp, Warning, TEXT("CurrentID: %f"), CurrentID);
+
+	CollapseAllWidgets();
+	CreatedWidgets[CurrentID]->SetVisibility(ESlateVisibility::Visible);
+	
 }
 
 void AHUD_BaseSetup::DrawHUD()
@@ -108,11 +121,4 @@ void AHUD_BaseSetup::DrawHUD()
 	Super::DrawHUD();
 }
 
-
-//void AHUD_BaseSetup::Tick(float DeltaTime)
-//{
-//
-//	Super::Tick(DeltaTime);
-//
-//}
 

@@ -218,8 +218,26 @@ void AMCharacter::AltLook(const FInputActionValue& Value)
 
 void AMCharacter::OpenInventory()
 {
-	AHUD_BaseSetup* HUD = Cast<AHUD_BaseSetup>(this->GetClass()); 
-	
-	HUD->ExpandWidget(2); 
-
+	// Get the player controller
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (PlayerController)
+	{
+		// Get the HUD and cast it to AHUD_BaseSetup
+		AHUD_BaseSetup* HUD = Cast<AHUD_BaseSetup>(PlayerController->GetHUD());
+		if (HUD)
+		{
+			// Now it's safe to call WantsToOpenWidget
+			HUD->WantsToOpenWidget(2);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Failed to cast to AHUD_BaseSetup in OpenInventory"));
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("PlayerController is null in OpenInventory"));
+	}
 }
+
+

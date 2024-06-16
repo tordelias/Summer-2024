@@ -25,9 +25,6 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TArray<TSubclassOf<class UUserWidget>> AllUIWidgets;
 
-	UPROPERTY(EditAnywhere, Category = HUD)
-	class UUserWidget* CurrentWidget;
-
 public:
 	// Current list of created UI widgets that are constantly active on screen
 	TArray<class UUserWidget*> CreatedWidgets;
@@ -56,7 +53,9 @@ public:
 	//Modals (Dialogs, Popups, etc.)
 
 public:
+	float CurrentID;
 	void CollapseAllWidgets();
+	void WantsToOpenWidget(int WidgetID);
 	void ExpandWidget(int WidgetID);
 
 };
