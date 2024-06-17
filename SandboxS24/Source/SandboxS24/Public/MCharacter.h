@@ -6,6 +6,7 @@
 #include "HUD_BaseSetup.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
+#include "SandboxS24/SandboxS24.h"
 #include "MCharacter.generated.h"
 
 
@@ -84,6 +85,11 @@ public:
 
 
 
+
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Animation Properties")
+	EWeaponType WeaponBeingUsed;
+
 private:
 	// Makes character move
 	void Move(const FInputActionValue& Value);
@@ -144,4 +150,5 @@ public:
 
 	USpringArmComponent* GetSpringArm() const { return SpringArm; }
 
+	EWeaponType GetWeaponBeingUsed() const { return WeaponBeingUsed; }
 };

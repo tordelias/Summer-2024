@@ -19,8 +19,6 @@
 // Sets default values
 AMCharacter::AMCharacter()
 {
-
-
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -55,13 +53,13 @@ AMCharacter::AMCharacter()
 	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComponent"));
 	InventoryComponent->Capacity = 20;
 
-
 	// enable crouching
 	if (GetMovementComponent())
 	{
 		GetMovementComponent()->GetNavAgentPropertiesRef().bCanCrouch = true;
 	}
 
+	WeaponBeingUsed= EWeaponType::EWT_None;
 }
 
 void AMCharacter::UseItem(UItemObject* Item)
