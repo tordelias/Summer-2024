@@ -120,8 +120,7 @@ void AMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		EnhancedInputComponent->BindAction(IA_Run, ETriggerEvent::Completed, this, &AMCharacter::StopRunning);
 
 		//Open Inventory
-		EnhancedInputComponent->BindAction(IA_Inventory, ETriggerEvent::Triggered, this, &AMCharacter::OpenInventory);
-
+		EnhancedInputComponent->BindAction(IA_Inventory, ETriggerEvent::Started, this, &AMCharacter::OpenInventory);
 	}
 
 }

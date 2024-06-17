@@ -93,10 +93,26 @@ void AHUD_BaseSetup::CollapseAllWidgets()
 // Checks if the widget is already open and if not sends the widget ID to ExpandWidget
 void AHUD_BaseSetup::WantsToOpenWidget(int WidgetID)
 {
+	UE_LOG(LogTemp, Warning, TEXT("I AM RUNNING"));
 	if (CurrentID == WidgetID)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("CurrentID == WidgetID"));
-		return;
+		if(CurrentID == 2)
+		{
+			APlayerController* PC = Cast<APlayerController>(GetWorld()->GetFirstPlayerController());
+			if (PC)
+			{
+				PC->bShowMouseCursor = false;
+				PC->bEnableClickEvents = false;
+				PC->bEnableMouseOverEvents = false;
+				PC->SetInputMode(FInputModeGameOnly());
+			}
+			CollapseAllWidgets();
+			ExpandWidget(0);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("CurrentID == WidgetID"));
+		}
 	}
 	else
 	{
@@ -130,7 +146,7 @@ void AHUD_BaseSetup::ExpandWidget(int WidgetID)
 				PC->bShowMouseCursor = true;
 				PC->bEnableClickEvents = true;
 				PC->bEnableMouseOverEvents = true;
-				PC->SetInputMode(FInputModeUIOnly());
+				PC->SetInputMode(FInputModeGameAndUI());
 			}
 			break;
 		case 3:
