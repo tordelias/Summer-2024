@@ -108,8 +108,45 @@ void AHUD_BaseSetup::WantsToOpenWidget(int WidgetID)
 void AHUD_BaseSetup::ExpandWidget(int WidgetID)
 {
 	CurrentID = WidgetID;
-	//what is CurrentID?
-	UE_LOG(LogTemp, Warning, TEXT("CurrentID: %f"), CurrentID);
+	APlayerController* PC = Cast<APlayerController>(GetWorld()->GetFirstPlayerController());
+
+	switch(CurrentID)
+	{
+		case 0:
+			UE_LOG(LogTemp, Warning, TEXT("UI"));
+			CollapseAllWidgets();
+			CreatedWidgets[CurrentID]->SetVisibility(ESlateVisibility::Visible);
+			break;
+		case 1:
+			UE_LOG(LogTemp, Warning, TEXT("CrossHair"));
+			CreatedWidgets[CurrentID]->SetVisibility(ESlateVisibility::Visible);
+			break;
+		case 2:
+			UE_LOG(LogTemp, Warning, TEXT("Inventory"));
+			CollapseAllWidgets();
+			CreatedWidgets[CurrentID]->SetVisibility(ESlateVisibility::Visible);
+			if(PC)
+			{
+				PC->bShowMouseCursor = true;
+				PC->bEnableClickEvents = true;
+				PC->bEnableMouseOverEvents = true;
+				PC->SetInputMode(FInputModeUIOnly());
+			}
+			break;
+		case 3:
+			UE_LOG(LogTemp, Warning, TEXT("MainMenu"));
+			CollapseAllWidgets();
+			CreatedWidgets[CurrentID]->SetVisibility(ESlateVisibility::Visible);
+			break;
+		case 4:
+			UE_LOG(LogTemp, Warning, TEXT("OptionsMenu"));
+			CollapseAllWidgets();
+			CreatedWidgets[CurrentID]->SetVisibility(ESlateVisibility::Visible);
+			break;
+		default:
+			UE_LOG(LogTemp, Warning, TEXT("Invalid WidgetID"));
+			break;
+	}
 
 	CollapseAllWidgets();
 	CreatedWidgets[CurrentID]->SetVisibility(ESlateVisibility::Visible);

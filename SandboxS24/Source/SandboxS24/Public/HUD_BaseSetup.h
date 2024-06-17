@@ -53,7 +53,7 @@ public:
 	//Modals (Dialogs, Popups, etc.)
 
 public:
-	float CurrentID;
+	int CurrentID;
 	void CollapseAllWidgets();
 	void WantsToOpenWidget(int WidgetID);
 	void ExpandWidget(int WidgetID);
