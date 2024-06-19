@@ -5,6 +5,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "MCharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "KismetAnimationLibrary.h"
 
 UMAnimInstance::UMAnimInstance()
 {
@@ -47,6 +48,8 @@ void UMAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 void UMAnimInstance::UpdateAnimationProperties()
 {
 	speed = Character->GetVelocity().Size();
+	//Direction = CalculateDirection(Character->GetVelocity(), Character->GetActorRotation());
+	Direction = UKismetAnimationLibrary::CalculateDirection(Character->GetVelocity(), Character->GetActorRotation());
 	bIsFalling = Character->GetMovementComponent()->IsFalling();
 	//bIsAlive = Character->IsPlayerAlive(); //TODO ADD THIS ON CHARACTER
 	bIsAlive = true; //TODO Remove once above is added

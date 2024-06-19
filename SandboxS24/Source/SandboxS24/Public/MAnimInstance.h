@@ -32,6 +32,9 @@ protected:
 	float speed;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Animation Properties")
+	float Direction;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Animation Properties")
 	bool bIsAlive;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Animation Properties")
