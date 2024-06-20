@@ -22,7 +22,7 @@ public:
 	class UInventoryComponent* OwningInventory;
 
 	/** Amount of items in a stack */
-	UPROPERTY(VisibleAnywhere, Category = "ItemData", meta = (UIMIN = 1, UIMAX 100))
+	UPROPERTY(VisibleAnywhere, Category = "ItemData", meta = (UIMIN = 1, UIMAX = 100))
 	int32 Quantity; 
 
 	UPROPERTY(EditAnywhere, Category = "ItemData")
