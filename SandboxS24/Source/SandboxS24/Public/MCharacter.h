@@ -16,7 +16,26 @@ class UCameraComponent;
 class UInputAction;
 class USpringArmComponent;
 class UInventoryComponent;
+class IInteractionInterface;
 struct FInputActionValue;
+
+USTRUCT()
+struct FInteractionData
+{
+	GENERATED_USTRUCT_BODY()
+
+	FInteractionData() : CurrentInteractable(nullptr), LastInteractionCheckTime(0.0f)
+	{
+
+	};
+
+
+	UPROPERTY()
+	AActor* CurrentInteractable;
+
+	UPROPERTY()
+	float LastInteractionCheckTime; 
+};
 
 
 
@@ -50,6 +69,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UInventoryComponent* InventoryComponent;
 
+private:
 
 	/** Jump Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -83,12 +103,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* IA_Inventory;
 
+	/** Interact Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* IA_Interact;
 
-
-
-
+public: 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Animation Properties")
 	EWeaponType WeaponBeingUsed;
+
+
 
 private:
 	// Makes character move
@@ -133,6 +156,29 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY(VisibleAnywhere, Category = "Interaction")
+	TScriptInterface<IInteractionInterface> TargetInteractable; 
+
+	float InteractionCheckFrequency; 
+
+	float InteractionCheckDistance; 
+
+	FTimerHandle TimerHandleInteraction; 
+
+	FInteractionData InteractionData; 
+
+	void PerformInteractionCheck();
+	
+	void FoundInteractable(AActor* newInteractable);
+
+	void NoInteractableFound();
+	
+	void BeginInteract();
+
+	void EndInteract();
+
+	void Interact();
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -140,7 +186,6 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-public:
 	/** Returns Mesh1P subobject **/
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	/** Returns FirstPersonCameraComponent subobject **/
@@ -151,4 +196,9 @@ public:
 	USpringArmComponent* GetSpringArm() const { return SpringArm; }
 
 	EWeaponType GetWeaponBeingUsed() const { return WeaponBeingUsed; }
+
+
+	FORCEINLINE bool bIsInteracting() const { return GetWorldTimerManager().IsTimerActive(TimerHandleInteraction); }
+
+
 };

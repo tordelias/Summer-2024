@@ -1,7 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
+//game
 #include "MCharacter.h"
+#include "ItemObject.h"
+#include "HUD_BaseSetup.h"
+#include "Interfaces/InteractionInterface.h"
+#include "InventoryComponent.h"
+
+//Engine
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -12,9 +18,10 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Engine/LocalPlayer.h"
-#include "ItemObject.h"
-#include "HUD_BaseSetup.h"
-#include "InventoryComponent.h"
+
+//Debug
+#include "DrawDebugHelpers.h"
+
 
 // Sets default values
 AMCharacter::AMCharacter()
@@ -60,6 +67,11 @@ AMCharacter::AMCharacter()
 	}
 
 	WeaponBeingUsed= EWeaponType::EWT_None;
+
+	// the frequency PerformInteractionCheck() will run, so it dosen't run every frame
+	InteractionCheckFrequency = 0.1f; 
+
+	InteractionCheckDistance = 225.f; 
 }
 
 void AMCharacter::UseItem(UItemObject* Item)
@@ -78,10 +90,16 @@ void AMCharacter::BeginPlay()
 
 }
 
+
 // Called every frame
 void AMCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (GetWorld()->TimeSince(InteractionData.LastInteractionCheckTime) > InteractionCheckFrequency)
+	{
+		PerformInteractionCheck();
+	}
 
 }
 
@@ -119,6 +137,10 @@ void AMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 		//Open Inventory
 		EnhancedInputComponent->BindAction(IA_Inventory, ETriggerEvent::Started, this, &AMCharacter::OpenInventory);
+
+		//Interact
+		EnhancedInputComponent->BindAction(IA_Interact, ETriggerEvent::Started, this, &AMCharacter::BeginInteract);
+		EnhancedInputComponent->BindAction(IA_Interact, ETriggerEvent::Completed, this, &AMCharacter::EndInteract);
 	}
 
 }
@@ -234,6 +256,123 @@ void AMCharacter::OpenInventory()
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("PlayerController is null in OpenInventory"));
+	}
+}
+
+void AMCharacter::PerformInteractionCheck()
+{
+	InteractionData.LastInteractionCheckTime = GetWorld()->GetTimeSeconds(); 
+	FVector TraceStart{GetPawnViewLocation()};
+	FVector TraceEnd{ TraceStart + (GetViewRotation().Vector() * InteractionCheckDistance) };
+	float ViewDirection = FVector::DotProduct(GetActorForwardVector(), GetViewRotation().Vector());
+
+	if(ViewDirection > 0)
+	{
+		//DebugLine to see LineTrace
+		DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, 0.5f, 0, 2.f);
+
+		FCollisionQueryParams QueryParams;
+		QueryParams.AddIgnoredActor(this);
+		FHitResult TraceHit;
+
+		if (GetWorld()->LineTraceSingleByChannel(TraceHit, TraceStart, TraceEnd, ECC_Visibility, QueryParams))
+		{
+			if (TraceHit.GetActor()->GetClass()->ImplementsInterface(UInteractionInterface::StaticClass()))
+			{
+				const float Distance = (TraceStart - TraceHit.ImpactPoint).Size();
+
+				if (TraceHit.GetActor() != InteractionData.CurrentInteractable && Distance < InteractionCheckDistance)
+				{
+					FoundInteractable(TraceHit.GetActor());
+					return;
+				}
+				else
+				{
+					return;
+
+				}
+			}
+		}
+	}
+	NoInteractableFound();
+}
+
+void AMCharacter::FoundInteractable(AActor* newInteractable)
+{
+	if (bIsInteracting())
+	{
+		EndInteract();
+	}
+	if (InteractionData.CurrentInteractable)
+	{
+		TargetInteractable = InteractionData.CurrentInteractable;
+		TargetInteractable->EndFocus(); 
+	}
+
+	InteractionData.CurrentInteractable = newInteractable;
+	TargetInteractable = newInteractable;
+
+	TargetInteractable->BeginFocus();
+}
+
+void AMCharacter::NoInteractableFound()
+{
+	if (bIsInteracting())
+	{
+		GetWorldTimerManager().ClearTimer(TimerHandleInteraction);
+	}
+	if (InteractionData.CurrentInteractable)
+	{
+		if (IsValid(TargetInteractable.GetObject()))
+		{
+			TargetInteractable->EndFocus();
+		}
+
+		//Hide Interaction Widget on HUD
+
+		InteractionData.CurrentInteractable = nullptr; 
+		TargetInteractable = nullptr; 
+	}
+}
+
+void AMCharacter::BeginInteract()
+{
+	PerformInteractionCheck();
+	
+	if (InteractionData.CurrentInteractable)
+	{
+		if (IsValid(TargetInteractable.GetObject()))
+		{
+			TargetInteractable->BeginInteract();
+			if (FMath::IsNearlyZero(TargetInteractable->InteractableData.InteractionDuration, 0.1f))
+			{
+				Interact();
+			}
+			else
+			{
+				GetWorldTimerManager().SetTimer(TimerHandleInteraction, this, &AMCharacter::Interact, TargetInteractable->InteractableData.InteractionDuration, false);
+			}
+		}
+
+	}
+}
+
+void AMCharacter::EndInteract()
+{
+		GetWorldTimerManager().ClearTimer(TimerHandleInteraction);
+
+		if (IsValid(TargetInteractable.GetObject()))
+		{
+			TargetInteractable->EndInteract();
+		}
+}
+
+void AMCharacter::Interact()
+{
+
+	if (IsValid(TargetInteractable.GetObject()))
+	{
+		TargetInteractable->Interact();
 	}
 }
 
