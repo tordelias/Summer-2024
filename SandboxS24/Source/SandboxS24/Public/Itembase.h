@@ -22,28 +22,28 @@ public:
 	class UInventoryComponent* OwningInventory;
 
 	/** Amount of items in a stack */
-	UPROPERTY(VisibleAnywhere, Category = "ItemData", meta = (UIMIN = 1, UIMAX = 100))
+	UPROPERTY(VisibleAnywhere, Category = "Item")
 	int32 Quantity; 
 
-	UPROPERTY(EditAnywhere, Category = "ItemData")
+	UPROPERTY(VisibleAnywhere, Category = "Item")
 	FName ID;
 
-	UPROPERTY(EditAnywhere, Category = "ItemData")
+	UPROPERTY(VisibleAnywhere, Category = "Item")
 	EItemType ItemType;
 
-	UPROPERTY(EditAnywhere, Category = "ItemData")
+	UPROPERTY(VisibleAnywhere, Category = "Item")
 	EItemQuality ItemQuality;
 
-	UPROPERTY(EditAnywhere, Category = "ItemData")
+	UPROPERTY(VisibleAnywhere, Category = "Item")
 	FItemStatistics ItemStatistics;
 
-	UPROPERTY(EditAnywhere, Category = "ItemData")
+	UPROPERTY(VisibleAnywhere, Category = "Item")
 	FItemTextData ItemTextData;
 
-	UPROPERTY(EditAnywhere, Category = "ItemData")
+	UPROPERTY(VisibleAnywhere, Category = "Item")
 	FItemNumericData ItemNumericData;
 
-	UPROPERTY(EditAnywhere, Category = "ItemData")
+	UPROPERTY(VisibleAnywhere, Category = "Item")
 	FItemAssetData ItemAssetData;
 
 	UItembase(); 
@@ -66,7 +66,7 @@ public:
 protected: 
 	bool operator == (const FName& OtherID) const
 	{
-		return ID == OtherID; 
+		return this->ID == OtherID; 
 	}
 	
 };

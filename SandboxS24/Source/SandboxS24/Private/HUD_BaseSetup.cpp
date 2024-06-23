@@ -3,6 +3,16 @@
 
 #include "HUD_BaseSetup.h"
 #include "Blueprint/UserWidget.h"
+#include"UserInterface/Interaction/InteractionWidget.h"
+#include"UserInterface/MainMenu.h"
+#include "Interfaces/InteractionInterface.h"
+
+
+
+AHUD_BaseSetup::AHUD_BaseSetup()
+{
+
+}
 
 void AHUD_BaseSetup::BeginPlay()
 {
@@ -78,6 +88,20 @@ void AHUD_BaseSetup::BeginPlay()
 	CollapseAllWidgets(); //Collapse all widgets
 
 	WantsToOpenWidget(0); //Open the first widget (UI)
+
+	if (MainMenuClass)
+	{
+		MainMenuWidget = CreateWidget<UMainMenu>(GetWorld(), MainMenuClass);
+		MainMenuWidget->AddToViewport(5);
+		MainMenuWidget->SetVisibility(ESlateVisibility::Collapsed);
+	}
+
+	if (InteractionWidgetclass)
+	{
+		InteractionWidget = CreateWidget<UInteractionWidget>(GetWorld(), InteractionWidgetclass);
+		InteractionWidget->AddToViewport(-1);
+		InteractionWidget->SetVisibility(ESlateVisibility::Collapsed);
+	}
 
 }
 
@@ -169,9 +193,58 @@ void AHUD_BaseSetup::ExpandWidget(int WidgetID)
 	
 }
 
+
+
 void AHUD_BaseSetup::DrawHUD()
 {
 	Super::DrawHUD();
+}
+
+
+
+void AHUD_BaseSetup::DisplayMenu()
+{
+	if (MainMenuWidget)
+	{
+		MainMenuWidget->SetVisibility(ESlateVisibility::Visible);
+	}
+}
+
+void AHUD_BaseSetup::HideMenu()
+{
+	if (MainMenuWidget)
+	{
+		MainMenuWidget->SetVisibility(ESlateVisibility::Collapsed);
+	}
+}
+
+void AHUD_BaseSetup::ShowInteractionWidget()
+{
+	if (InteractionWidget)
+	{
+		InteractionWidget->SetVisibility(ESlateVisibility::Visible);
+	}
+}
+
+void AHUD_BaseSetup::HideInteractionWidget()
+{
+	if (InteractionWidget)
+	{
+		InteractionWidget->SetVisibility(ESlateVisibility::Collapsed);
+	}
+}
+
+void AHUD_BaseSetup::UpdateInteractionWidget(const FInteractableData* InteractableData)
+{
+	if (InteractionWidget)
+	{
+		if (InteractionWidget->GetVisibility() == ESlateVisibility::Collapsed)
+		{
+			InteractionWidget->SetVisibility(ESlateVisibility::Visible);
+		}
+
+		InteractionWidget->UpdateWidget(InteractableData);
+	}
 }
 
 

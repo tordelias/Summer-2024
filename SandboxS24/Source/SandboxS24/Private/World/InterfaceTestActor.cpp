@@ -2,6 +2,7 @@
 
 
 #include "World/InterfaceTestActor.h"
+#include "MCharacter.h"
 
 // Sets default values
 AInterfaceTestActor::AInterfaceTestActor()
@@ -18,6 +19,8 @@ AInterfaceTestActor::AInterfaceTestActor()
 void AInterfaceTestActor::BeginPlay()
 {
 	Super::BeginPlay();
+
+	InteractableData = InstanceInteractableData; 
 	
 }
 
@@ -54,7 +57,7 @@ void AInterfaceTestActor::EndInteract()
 	UE_LOG(LogTemp, Warning, TEXT("Calling EndInteract"))
 }
 
-void AInterfaceTestActor::Interact()
+void AInterfaceTestActor::Interact(AMCharacter* PlayerCharacter)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Calling Interact"))
 }

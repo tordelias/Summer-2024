@@ -87,6 +87,7 @@ void AMCharacter::UseItem(UItemObject* Item)
 void AMCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	HUD_BaseSetup = Cast<AHUD_BaseSetup>(GetWorld()->GetFirstPlayerController()->GetHUD());
 
 }
 
@@ -242,11 +243,11 @@ void AMCharacter::OpenInventory()
 	if (PlayerController)
 	{
 		// Get the HUD and cast it to AHUD_BaseSetup
-		AHUD_BaseSetup* HUD = Cast<AHUD_BaseSetup>(PlayerController->GetHUD());
-		if (HUD)
+		//AHUD_BaseSetup* HUD = Cast<AHUD_BaseSetup>(PlayerController->GetHUD());
+		if (HUD_BaseSetup)
 		{
 			// Now it's safe to call WantsToOpenWidget
-			HUD->WantsToOpenWidget(2);
+			HUD_BaseSetup->WantsToOpenWidget(2);
 		}
 		else
 		{
@@ -279,9 +280,8 @@ void AMCharacter::PerformInteractionCheck()
 		{
 			if (TraceHit.GetActor()->GetClass()->ImplementsInterface(UInteractionInterface::StaticClass()))
 			{
-				const float Distance = (TraceStart - TraceHit.ImpactPoint).Size();
 
-				if (TraceHit.GetActor() != InteractionData.CurrentInteractable && Distance < InteractionCheckDistance)
+				if (TraceHit.GetActor() != InteractionData.CurrentInteractable)
 				{
 					FoundInteractable(TraceHit.GetActor());
 					return;
@@ -312,6 +312,8 @@ void AMCharacter::FoundInteractable(AActor* newInteractable)
 	InteractionData.CurrentInteractable = newInteractable;
 	TargetInteractable = newInteractable;
 
+	HUD_BaseSetup->UpdateInteractionWidget(&TargetInteractable->InteractableData);
+
 	TargetInteractable->BeginFocus();
 }
 
@@ -328,7 +330,7 @@ void AMCharacter::NoInteractableFound()
 			TargetInteractable->EndFocus();
 		}
 
-		//Hide Interaction Widget on HUD
+		HUD_BaseSetup->HideInteractionWidget();
 
 		InteractionData.CurrentInteractable = nullptr; 
 		TargetInteractable = nullptr; 
@@ -372,7 +374,7 @@ void AMCharacter::Interact()
 
 	if (IsValid(TargetInteractable.GetObject()))
 	{
-		TargetInteractable->Interact();
+		TargetInteractable->Interact(this);
 	}
 }
 
