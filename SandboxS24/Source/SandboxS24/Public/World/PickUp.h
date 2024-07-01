@@ -66,8 +66,4 @@ protected:
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override; 
 #endif
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 };

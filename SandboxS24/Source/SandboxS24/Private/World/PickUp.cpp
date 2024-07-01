@@ -20,7 +20,7 @@ void APickUp::BeginPlay()
 {
 	Super::BeginPlay();
 
-	InitalizePickup(UItembase::StaticClass(), ItemQuantity);
+	//InitalizePickup(UItembase::StaticClass(), ItemQuantity);
 
 }
 
