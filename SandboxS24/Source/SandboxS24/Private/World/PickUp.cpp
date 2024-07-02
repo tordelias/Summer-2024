@@ -4,6 +4,8 @@
 #include "World/PickUp.h"
 #include "Itembase.h"
 #include "ItemDataStructs.h"
+#include "InventoryComponent.h"
+#include "MCharacter.h"
 
 // Sets default values
 APickUp::APickUp()
@@ -84,12 +86,39 @@ void APickUp::Interact(AMCharacter* PlayerCharacter)
 
 void APickUp::TakePickup(const AMCharacter* Taker)
 {
-	if (!IsPendingKillPending())
+	if (IsPendingKillPending())
+		return;
+
+	if (!ItemRefrence)
 	{
-		if (ItemRefrence)
+		UE_LOG(LogTemp, Warning, TEXT("Pickup internal item refrence was null"));
+		return;
+	}
+
+	if (UInventoryComponent* PlayerInventory = Taker->GetInventory())
+	{
+		const FItemAddResult AddResult = PlayerInventory->HandleAddItem(ItemRefrence); 
+		switch (AddResult.OperationResult)
 		{
-			//if(UInventoryComponent* PlayerInventory = Taker->GetInventory())
+		case EItemAddResult::IAR_NoItemAdded: 
+
+			break; 
+		case EItemAddResult::IAR_PartialAmountItemAdded:
+
+			UpdateInteractableData(); 
+			Taker->UpdateInteractionWidget(); 
+
+			break; 
+
+		case EItemAddResult::IAR_AllItemAdded:
+			Destroy(); 
+			break; 
 		}
+		UE_LOG(LogTemp, Warning, TEXT("%s"), *AddResult.ResultMessage.ToString());
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Player Inventory component is null!")); 
 	}
 }
 

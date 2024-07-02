@@ -2,7 +2,6 @@
 
 //game
 #include "MCharacter.h"
-#include "ItemObject.h"
 #include "HUD_BaseSetup.h"
 #include "Interfaces/InteractionInterface.h"
 #include "InventoryComponent.h"
@@ -58,7 +57,8 @@ AMCharacter::AMCharacter()
 
 	//inventory
 	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComponent"));
-	InventoryComponent->Capacity = 20;
+	InventoryComponent->SetSlotsCapacity(20);
+	InventoryComponent->SetrWeightCapasity(50.f);
 
 	// enable crouching
 	if (GetMovementComponent())
@@ -74,14 +74,7 @@ AMCharacter::AMCharacter()
 	InteractionCheckDistance = 225.f; 
 }
 
-void AMCharacter::UseItem(UItemObject* Item)
-{
-	if (Item)
-	{
-		Item->Use(this);
-		Item->OnUse(this); // Blueprint Implementable Event
-	}
-}
+
 
 // Called when the game starts or when spawned
 void AMCharacter::BeginPlay()
@@ -145,6 +138,7 @@ void AMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	}
 
 }
+
 
 void AMCharacter::Move(const FInputActionValue& Value)
 {
@@ -376,6 +370,15 @@ void AMCharacter::Interact()
 	{
 		TargetInteractable->Interact(this);
 	}
+}
+
+void AMCharacter::UpdateInteractionWidget() const
+{
+	if (IsValid(TargetInteractable.GetObject()))
+	{
+		HUD_BaseSetup->UpdateInteractionWidget(&TargetInteractable->InteractableData);
+	}
+
 }
 
 

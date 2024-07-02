@@ -4,8 +4,14 @@
 #include "Itembase.h"
 #include "InventoryComponent.h"
 
-UItembase::UItembase()
+UItembase::UItembase() : bIsCopy(false), bIsPickup(false)
 {
+}
+
+void UItembase::ResetItemFlags()
+{
+	bIsCopy = false; 
+	bIsPickup = false; 
 }
 
 UItembase* UItembase::CreateItemCopy() const
@@ -20,6 +26,7 @@ UItembase* UItembase::CreateItemCopy() const
 	ItemCopy->ItemNumericData = this->ItemNumericData; 
 	ItemCopy->ItemStatistics = this->ItemStatistics; 
 	ItemCopy->ItemAssetData = this->ItemAssetData; 
+	ItemCopy->bIsCopy = true; 
 
 	return ItemCopy; 
 }
@@ -35,7 +42,7 @@ void UItembase::SetQuantity(const int32 NewQuantity)
 		{
 			if (Quantity <= 0)
 			{
-				//OwningInventory->RemoveItem(this);
+				OwningInventory->RemoveSingleInstanceOfItem(this); 
 			}
 		}
 	}

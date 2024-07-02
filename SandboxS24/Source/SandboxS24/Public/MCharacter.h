@@ -66,7 +66,7 @@ public:
 	USpringArmComponent* SpringArm;
 
 	/** Inventory */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
 	UInventoryComponent* InventoryComponent;
 
 private:
@@ -147,11 +147,6 @@ private:
 	FRotator InitalCameraRotation;
 
 
-	// Uses an item within the inventory
-	UFUNCTION(BlueprintCallable, category = "Items")
-	void UseItem(class UItemObject* Item);
-
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -189,6 +184,8 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	void UpdateInteractionWidget() const; 
+
 	/** Returns Mesh1P subobject **/
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	/** Returns FirstPersonCameraComponent subobject **/
@@ -199,6 +196,7 @@ public:
 	USpringArmComponent* GetSpringArm() const { return SpringArm; }
 
 	EWeaponType GetWeaponBeingUsed() const { return WeaponBeingUsed; }
+	FORCEINLINE UInventoryComponent* GetInventory() const { return InventoryComponent;  }
 
 
 	FORCEINLINE bool bIsInteracting() const { return GetWorldTimerManager().IsTimerActive(TimerHandleInteraction); }
