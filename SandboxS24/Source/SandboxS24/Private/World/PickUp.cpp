@@ -10,19 +10,19 @@
 // Sets default values
 APickUp::APickUp()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
-	PickUpMesh = CreateDefaultSubobject<UStaticMeshComponent>("PickupMesh"); 
-	PickUpMesh->SetSimulatePhysics(true); 
-	SetRootComponent(PickUpMesh); 
+	PickUpMesh = CreateDefaultSubobject<UStaticMeshComponent>("PickupMesh");
+	PickUpMesh->SetSimulatePhysics(true);
+	SetRootComponent(PickUpMesh);
 
 }
 void APickUp::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//InitalizePickup(UItembase::StaticClass(), ItemQuantity);
+	InitalizePickup(UItembase::StaticClass(), ItemQuantity);
 
 }
 
@@ -34,28 +34,28 @@ void APickUp::InitalizePickup(const TSubclassOf<UItembase> BaseClass, const int3
 
 		ItemRefrence = NewObject<UItembase>(this, BaseClass);
 
-		ItemRefrence->ID = ItemData->ID; 
-		ItemRefrence->ItemType = ItemData->ItemType; 
-		ItemRefrence->ItemQuality = ItemData->ItemQuality; 
-		ItemRefrence->ItemNumericData = ItemData->ItemNumericData; 
-		ItemRefrence->ItemTextData = ItemData->ItemTextData; 
-		ItemRefrence->ItemAssetData = ItemData->ItemAssetData; 
+		ItemRefrence->ID = ItemData->ID;
+		ItemRefrence->ItemType = ItemData->ItemType;
+		ItemRefrence->ItemQuality = ItemData->ItemQuality;
+		ItemRefrence->ItemNumericData = ItemData->ItemNumericData;
+		ItemRefrence->ItemTextData = ItemData->ItemTextData;
+		ItemRefrence->ItemAssetData = ItemData->ItemAssetData;
 
-		InQuantity <= 0 ? ItemRefrence->SetQuantity(1) : ItemRefrence->SetQuantity(InQuantity); 
+		InQuantity <= 0 ? ItemRefrence->SetQuantity(1) : ItemRefrence->SetQuantity(InQuantity);
 
 		PickUpMesh->SetStaticMesh(ItemData->ItemAssetData.Mesh);
 
-		UpdateInteractableData(); 
+		UpdateInteractableData();
 	}
 }
 
 void APickUp::InitalizeDrop(UItembase* ItemDrop, const int32 InQuantity)
 {
-	ItemRefrence = ItemDrop; 
+	ItemRefrence = ItemDrop;
 	InQuantity <= 0 ? ItemRefrence->SetQuantity(1) : ItemRefrence->SetQuantity(InQuantity);
-	ItemRefrence->ItemNumericData.Weight = ItemDrop->GetItemSingleWeight(); 
+	ItemRefrence->ItemNumericData.Weight = ItemDrop->GetItemSingleWeight();
 	PickUpMesh->SetStaticMesh(ItemDrop->ItemAssetData.Mesh);
-	UpdateInteractableData(); 
+	UpdateInteractableData();
 }
 
 void APickUp::BeginFocus()
@@ -88,54 +88,56 @@ void APickUp::TakePickup(const AMCharacter* Taker)
 {
 	if (IsPendingKillPending())
 		return;
-
 	if (!ItemRefrence)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Pickup internal item refrence was null"));
 		return;
 	}
-
 	if (UInventoryComponent* PlayerInventory = Taker->GetInventory())
 	{
-		const FItemAddResult AddResult = PlayerInventory->HandleAddItem(ItemRefrence); 
+		const FItemAddResult AddResult = PlayerInventory->HandleAddItem(ItemRefrence);
 		switch (AddResult.OperationResult)
 		{
-		case EItemAddResult::IAR_NoItemAdded: 
+		case EItemAddResult::IAR_NoItemAdded:
 
-			break; 
+			break;
 		case EItemAddResult::IAR_PartialAmountItemAdded:
 
-			UpdateInteractableData(); 
-			Taker->UpdateInteractionWidget(); 
+			UpdateInteractableData();
+			Taker->UpdateInteractionWidget();
 
-			break; 
+			break;
 
 		case EItemAddResult::IAR_AllItemAdded:
-			Destroy(); 
-			break; 
+			Destroy();
+			break;
+
 		}
 		UE_LOG(LogTemp, Warning, TEXT("%s"), *AddResult.ResultMessage.ToString());
 	}
+
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Player Inventory component is null!")); 
+		UE_LOG(LogTemp, Warning, TEXT("Player Inventory component is null!"));
 	}
+
+
 }
 
 void APickUp::UpdateInteractableData()
 {
 	InstanceInteractableData.InteractableType = EInteractableType::Pickup;
 	InstanceInteractableData.Action = ItemRefrence->ItemTextData.IteractionText;
-	InstanceInteractableData.Name = ItemRefrence->ItemTextData.Name; 
-	InstanceInteractableData.Quantity = ItemRefrence->Quantity; 
-	InteractableData = InstanceInteractableData; 
+	InstanceInteractableData.Name = ItemRefrence->ItemTextData.Name;
+	InstanceInteractableData.Quantity = ItemRefrence->Quantity;
+	InteractableData = InstanceInteractableData;
 }
 
 void APickUp::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 
-	const FName ChangedPropertyName = PropertyChangedEvent.Property ? PropertyChangedEvent.Property->GetFName() : NAME_None; 
+	const FName ChangedPropertyName = PropertyChangedEvent.Property ? PropertyChangedEvent.Property->GetFName() : NAME_None;
 
 	if (ChangedPropertyName == GET_MEMBER_NAME_CHECKED(APickUp, DesieredItemID))
 	{

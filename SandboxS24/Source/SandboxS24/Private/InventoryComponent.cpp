@@ -100,25 +100,24 @@ FItemAddResult UInventoryComponent::HandleAddItem(UItembase* InputItem)
 		}
 
 		//Stackable
-		//const int32 StackableAmountAdded = HandleStackableItems(InputItem, InitalRequestedAddAmount); 
-		//if (StackableAmountAdded == InitalRequestedAddAmount)
-		//{
-		//	//return added all result
-		//}
-		//if (StackableAmountAdded < InitalRequestedAddAmount && StackableAmountAdded > 0)
-		//{
-		//	//return added partial result
-		//}
-		//if (StackableAmountAdded <= 0)
-		//{
-		//	//return added none result
-		//}
+		const int32 StackableAmountAdded = HandleStackableItems(InputItem, InitalRequestedAddAmount); 
+		if (StackableAmountAdded == InitalRequestedAddAmount)
+		{
+			return FItemAddResult::AddedAll(InitalRequestedAddAmount, FText::Format(FText::FromString("Successfully added {0} {1} to the inventory."), InitalRequestedAddAmount, InputItem->ItemTextData.Name));
+		}
+		if (StackableAmountAdded < InitalRequestedAddAmount && StackableAmountAdded > 0)
+		{
+			return FItemAddResult::AddedPartial(StackableAmountAdded, FText::Format(FText::FromString("Partial amount of {0} added to the inventory. Number added = {1}") ,InputItem->ItemTextData.Name, StackableAmountAdded));
 
-		//Temprary return to compile
-		return FItemAddResult::AddedNone(FText::Format(FText::FromString("Could not add {0} to the inventory. Item has an invalid weight value."), InputItem->ItemTextData.Name));
+		}
+		if (StackableAmountAdded <= 0)
+		{
+			return FItemAddResult::AddedNone(FText::Format(FText::FromString("could not add {0} to the inventory. Number added = {1}"), InputItem->ItemTextData.Name, StackableAmountAdded));
+		}
+
 	}
-	//Temprary return to compile
-	return FItemAddResult::AddedNone(FText::Format(FText::FromString("Could not add {0} to the inventory. Item has an invalid weight value."), InputItem->ItemTextData.Name));
+	check(false);
+	return FItemAddResult::AddedNone(FText::FromString("TryAddItem fallthrough error. GetOwner() Check failed"));
 }
 
 UItembase* UInventoryComponent::FindMatchingItem(UItembase* ItemIn) const
